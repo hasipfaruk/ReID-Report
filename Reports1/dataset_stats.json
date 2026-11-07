@@ -1,0 +1,62 @@
+{
+ "market": {
+  "train": {
+   "images": 12936,
+   "ids": 751,
+   "cams": 6,
+   "outfits": 751,
+   "img_per_id": 17.2,
+   "outfits_per_id": 1.0
+  },
+  "query": {
+   "images": 3368,
+   "ids": 750,
+   "cams": 6,
+   "outfits": 750,
+   "img_per_id": 4.5,
+   "outfits_per_id": 1.0
+  },
+  "gallery": {
+   "images": 13115,
+   "ids": 750,
+   "cams": 6,
+   "outfits": 750,
+   "img_per_id": 17.5,
+   "outfits_per_id": 1.0
+  }
+ },
+ "prcc": {
+  "train": {
+   "images": 17896,
+   "ids": 150,
+   "cams": 3,
+   "outfits": 300,
+   "img_per_id": 119.3,
+   "outfits_per_id": 2.0
+  },
+  "gallery": {
+   "images": 3384,
+   "ids": 71,
+   "cams": 1,
+   "outfits": 71,
+   "img_per_id": 47.7,
+   "outfits_per_id": 1.0
+  },
+  "query_same": {
+   "images": 3873,
+   "ids": 71,
+   "cams": 1,
+   "outfits": 71,
+   "img_per_id": 54.5,
+   "outfits_per_id": 1.0
+  },
+  "query_diff": {
+   "images": 3543,
+   "ids": 71,
+   "cams": 1,
+   "outfits": 71,
+   "img_per_id": 49.9,
+   "outfits_per_id": 1.0
+  }
+ }
+}

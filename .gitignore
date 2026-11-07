@@ -1,0 +1,6 @@
+# model weights and big archives (too large for GitHub, >100 MB)
+*.pth
+*.zip
+# local helpers
+__pycache__/
+*.pyc
