@@ -108,3 +108,51 @@ arrow(ax, 71, 40.5, 76, 40.5); arrow(ax, 71, 14, 76, 24); arrow(ax, 71, 11, 76, 
 ax.text(50, 49.5, 'CAL training: epochs 1 to 25 use L_ID only; from epoch 26: L_ID + L_C + L_CA', ha='center', fontsize=9)
 save(fig, 'fig_cal_architecture.png')
 print('figures written to', OUT, sorted(os.listdir(OUT)))
+
+
+# ================================================================ FAIR COMPARISON (read from the Kaggle result files)
+import json
+RUN = os.path.join(os.path.dirname(os.path.dirname(OUT)), 'results', 'fair_run_s0', 'outputs')
+fair = {m: json.load(open(os.path.join(RUN, f'fair_{m}_s0_history.json')))['history'] for m in ('baseline', 'transreid', 'cal')}
+names = {'baseline': 'Baseline (ResNet-50)', 'transreid': 'TransReID (ViT-B/16)', 'cal': 'CAL (ResNet-50)'}
+styles = {'baseline': ('s--', '0.45'), 'transreid': ('^:', 'black'), 'cal': ('o-', 'black')}
+ev = {m: [r for r in h if 'mAP' in r] for m, h in fair.items()}
+
+# Fig: clothes-changing mAP and Rank-1 during training, fair protocol
+fig, axes = plt.subplots(1, 2, figsize=(7.4, 3.2), sharex=True)
+for ax, key, lab in zip(axes, ('clothes_changing/mAP', 'clothes_changing/R1'), ('mAP (%)', 'Rank-1 (%)')):
+    for m in ('baseline', 'transreid', 'cal'):
+        st, c = styles[m]
+        ax.plot([r['epoch'] for r in ev[m]], [r[key] * 100 for r in ev[m]], st, color=c, label=names[m], ms=5)
+    ax.axvline(25.5, color='0.65', lw=1)
+    ax.set(xlabel='epoch', ylabel=lab, ylim=(37, 54), xticks=range(10, 70, 10))
+axes[0].text(26.5, 38, 'CAL loss\nswitched on', fontsize=7, color='0.3')
+axes[0].set_title('Clothes-changing mAP', fontsize=10); axes[1].set_title('Clothes-changing Rank-1', fontsize=10)
+axes[1].legend(fontsize=7, frameon=False, loc='lower right')
+save(fig, 'fig_fair_curves.png')
+
+# Fig: final results (epoch 60) under the fair protocol
+last = {m: ev[m][-1] for m in ev}
+order = ['baseline', 'transreid', 'cal']
+fig, ax = plt.subplots(figsize=(6.6, 3.2))
+for i, (k, lab, fc, hatch) in enumerate((('R1', 'Rank-1', '0.35', ''), ('mAP', 'mAP', 'white', '//'), ('mINP', 'mINP', '0.8', ''))):
+    vals = [last[m][f'clothes_changing/{k}'] * 100 for m in order]
+    b = ax.bar([j + (i - 1) * 0.26 for j in range(3)], vals, 0.26, color=fc, edgecolor='black', hatch=hatch, label=lab)
+    ax.bar_label(b, fmt='%.1f', fontsize=7, padding=1)
+ax.set_xticks(range(3), [names[m].replace(' (', '\n(') for m in order], fontsize=8)
+ax.set(ylabel='%', ylim=(0, 62), title='PRCC clothes-changing, fair protocol, epoch 60')
+ax.legend(fontsize=8, frameon=False, ncol=3, loc='upper right')
+save(fig, 'fig_fair_comparison.png')
+
+# Fig: same model, original settings vs fair protocol (clothes-changing mAP at the last epoch)
+orig_last = {'baseline': 45.56, 'transreid': 50.11, 'cal': 54.23}      # epoch 60 of the original-settings runs
+fig, ax = plt.subplots(figsize=(6.2, 3.0))
+b1 = ax.bar([j - 0.19 for j in range(3)], [orig_last[m] for m in order], 0.38, color='0.35', edgecolor='black', label="each paper's own settings")
+b2 = ax.bar([j + 0.19 for j in range(3)], [last[m]['clothes_changing/mAP'] * 100 for m in order], 0.38, color='white',
+            edgecolor='black', hatch='//', label='fair protocol')
+ax.bar_label(b1, fmt='%.1f', fontsize=7, padding=1); ax.bar_label(b2, fmt='%.1f', fontsize=7, padding=1)
+ax.set_xticks(range(3), [names[m].replace(' (', '\n(') for m in order], fontsize=8)
+ax.set(ylabel='clothes-changing mAP (%)', ylim=(0, 72), title='Effect of the training protocol (epoch 60)')
+ax.legend(fontsize=8, frameon=False, loc='upper center', ncol=2)
+save(fig, 'fig_protocol_effect.png')
+print('fair figures written')

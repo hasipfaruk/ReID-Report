@@ -1,0 +1,4 @@
+method,seeds,epoch,train_hours,CC_R1,CC_R1_std,CC_R5,CC_R5_std,CC_R10,CC_R10_std,CC_mAP,CC_mAP_std,CC_mINP,CC_mINP_std,SC_R1,SC_R1_std,SC_R5,SC_R5_std,SC_R10,SC_R10_std,SC_mAP,SC_mAP_std,SC_mINP,SC_mINP_std
+Baseline (ResNet-50),1,60,1.03,51.03,,54.33,,55.69,,51.67,,36.74,,99.9,,100.0,,100.0,,99.68,,93.12,
+TransReID (ViT-B/16),1,60,2.99,45.67,,51.23,,53.77,,48.28,,34.79,,99.92,,100.0,,100.0,,99.08,,92.65,
+CAL (ResNet-50),1,60,0.97,46.32,,53.09,,55.21,,48.04,,28.82,,99.74,,99.87,,99.9,,98.41,,82.58,
